@@ -1,0 +1,417 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #0d0d0f;
+  --surface: #141417;
+  --surface-2: #1c1c21;
+  --border: #2a2a32;
+  --border-hover: #3d3d4a;
+  --accent: #c8f04a;
+  --accent-dim: rgba(200, 240, 74, 0.12);
+  --accent-glow: rgba(200, 240, 74, 0.25);
+  --text-primary: #f0f0f4;
+  --text-secondary: #7a7a8a;
+  --text-muted: #4a4a58;
+  --danger: #ff4d6a;
+  --danger-dim: rgba(255, 77, 106, 0.1);
+  --checked-text: #4a4a58;
+  --radius: 12px;
+  --radius-lg: 20px;
+}
+
+html {
+  background: var(--bg);
+  min-height: 100%;
+}
+
+body {
+  font-family: 'DM Mono', monospace;
+  background: var(--bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  padding: 48px 24px 80px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Ambient background glow */
+body::before {
+  content: '';
+  position: fixed;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(200, 240, 74, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Layout wrapper */
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Back link */
+a[href="/"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 48px;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  transition: all 0.2s ease;
+  align-self: flex-start;
+}
+
+a[href="/"]:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+a[href="/"]::before {
+  content: '←';
+  font-size: 14px;
+}
+
+/* Main heading */
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(40px, 8vw, 72px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+}
+
+/* Task counter — rendered via CSS content trick */
+h1::after {
+  content: '.';
+  color: var(--accent);
+  -webkit-text-fill-color: var(--accent);
+}
+
+/* Tasks list */
+.tasks {
+  list-style: none;
+  width: 100%;
+  max-width: 680px;
+  margin: 40px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Individual task item */
+.tasks li {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+  animation: slideIn 0.3s ease both;
+  position: relative;
+  overflow: hidden;
+}
+
+.tasks li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 0 2px 2px 0;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.tasks li:hover {
+  border-color: var(--border-hover);
+  background: var(--surface-2);
+  transform: translateX(2px);
+}
+
+.tasks li:hover::before {
+  opacity: 1;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Task text — first text node in li */
+.tasks li {
+  font-size: 14px;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+/* Checkbox */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border-hover);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  background: transparent;
+}
+
+input[type="checkbox"]:hover {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+
+
+input[type="checkbox"]:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 8px;
+  height: 12px;
+  border: 2px solid #0d0d0f;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+/* Label for checkbox */
+label[for^="completed-"] {
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+label[for^="completed-"]:hover {
+  color: var(--accent);
+}
+
+/* Completed state */
+input[type="checkbox"]:checked ~ label {
+  color: var(--accent);
+}
+
+/* Delete button */
+button[type="button"] {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+button[type="button"]:hover {
+  background: var(--danger-dim);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+button[type="button"]:active {
+  transform: scale(0.96);
+}
+
+/* Section heading */
+h2 {
+  font-family: 'Syne', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+/* Add task form */
+form[action="/todo"] {
+  width: 100%;
+  max-width: 680px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  transition: border-color 0.2s ease;
+}
+
+form[action="/todo"]:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent-dim), 0 8px 32px rgba(0,0,0,0.4);
+}
+
+/* Text input */
+input[type="text"] {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-primary);
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  padding: 14px 18px;
+  outline: none;
+  transition: all 0.2s ease;
+  margin-bottom: 14px;
+}
+
+input[type="text"]::placeholder {
+  color: var(--text-muted);
+}
+
+input[type="text"]:focus {
+  border-color: var(--accent);
+  background: rgba(200, 240, 74, 0.03);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+
+/* Submit button */
+button[type="submit"] {
+  width: 100%;
+  background: var(--accent);
+  color: #0d0d0f;
+  border: none;
+  border-radius: var(--radius);
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 14px 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+button[type="submit"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+button[type="submit"]:hover {
+  background: #d4f55a;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px var(--accent-glow);
+}
+
+button[type="submit"]:hover::before {
+  opacity: 1;
+}
+
+button[type="submit"]:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Empty state */
+.tasks:empty::after {
+  content: 'Задач пока нет — добавьте первую ↓';
+  display: block;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  padding: 48px 0;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-hover);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Selection */
+::selection {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  body {
+    padding: 32px 16px 60px;
+  }
+
+  .tasks li {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .tasks li > *:not(:first-child) {
+    justify-self: start;
+  }
+}

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Market</title>
+  <link rel="stylesheet" href="/market.css">
+</head>
+<body>
+
+  <a href="/">← Назад</a>
+
+  <h1>Game Market</h1>
+  <p class="subtitle">Цифровой магазин игр</p>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--  КАТАЛОГ ИГР                                   -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <section class="catalog-section">
+    <div class="section-header">
+      <h2>Список игр</h2>
+      <span class="count-badge">{{gamesCount}} игр</span>
+    </div>
+
+    <ul class="games-grid">
+      {{#each games}}
+      <li class="game-card">
+
+        <!-- Обложка -->
+        <div class="game-cover">
+          <img src="{{this.img}}" alt="{{this.title}}" onerror="this.style.display='none'">
+          {{#if this.genre}}
+          <span class="genre-tag">{{this.genre}}</span>
+          {{/if}}
+        </div>
+
+        <!-- Инфо -->
+        <div class="game-info">
+          <span class="game-title">{{this.title}}</span>
+          <span class="game-price">{{this.price}} ₽</span>
+        </div>
+
+        <!-- Действия -->
+        <div class="game-actions">
+          <form action="/market/cart/add/{{this.id}}" method="POST">
+            <button type="submit" class="btn-cart">В корзину</button>
+          </form>
+          <form action="/market/delete-game/{{this.id}}" method="POST">
+            <button type="submit" class="btn-delete">✕</button>
+          </form>
+        </div>
+
+      </li>
+      {{else}}
+      <!-- Пустое состояние — CSS ::after -->
+      {{/each}}
+    </ul>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--  ДОБАВИТЬ ИГРУ                                 -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <section class="add-section">
+    <h2>Добавить игру в каталог</h2>
+
+    <form action="/market/add-game" method="POST" class="add-form">
+
+      <div class="fields-row">
+        <div class="field-group">
+          <label for="game-title">Название</label>
+          <input type="text" id="game-title" name="title" placeholder="Название игры" required>
+        </div>
+        <div class="field-group field-short">
+          <label for="game-price">Цена (₽)</label>
+          <input type="text" id="game-price" name="price" placeholder="999" inputmode="numeric">
+        </div>
+      </div>
+
+      <div class="fields-row">
+        <div class="field-group">
+          <label for="game-img">Ссылка на обложку</label>
+          <input type="text" id="game-img" name="img" placeholder="https://example.com/cover.jpg">
+        </div>
+        <div class="field-group field-short">
+          <label for="game-genre">Жанр</label>
+          <input type="text" id="game-genre" name="genre" placeholder="RPG">
+        </div>
+      </div>
+
+      <button type="submit">Добавить игру</button>
+    </form>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!--  КОРЗИНА                                       -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <section class="cart-section">
+    <div class="section-header">
+      <h2>Твоя корзина</h2>
+      {{#if cartCount}}
+      <span class="count-badge accent">{{cartCount}} товар(а)</span>
+      {{/if}}
+    </div>
+
+    <div class="cart-box">
+      {{#each cart}}
+      <div class="cart-item">
+        <div class="cart-cover">
+          <img src="{{this.img}}" alt="{{this.title}}" onerror="this.style.display='none'">
+        </div>
+        <div class="cart-info">
+          <span class="cart-title">{{this.title}}</span>
+          <span class="cart-price">{{this.price}} ₽</span>
+        </div>
+        <form action="/market/cart/remove/{{this.gameId}}" method="POST">
+          <button type="submit" class="btn-delete">✕</button>
+        </form>
+      </div>
+      {{else}}
+      <p class="cart-empty">Корзина пуста — добавьте игры выше ↑</p>
+      {{/each}}
+
+      {{#if cartCount}}
+      <div class="cart-footer">
+        <span class="cart-total">Итого: <strong>{{cartTotal}} ₽</strong></span>
+        <form action="/market/cart/clear" method="POST">
+          <button type="submit" class="btn-clear">Очистить</button>
+        </form>
+        <button type="button" class="btn-checkout">Оплатить</button>
+      </div>
+      {{/if}}
+    </div>
+  </section>
+
+</body>
+<script>
+  console.log('market module connected to project');
+
+  // Анимация исчезновения при удалении из каталога и корзины
+  document.querySelectorAll('.btn-delete').forEach(btn => {
+    btn.closest('form').addEventListener('submit', function () {
+      const target = this.closest('.game-card') || this.closest('.cart-item');
+      if (target) {
+        target.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+        target.style.opacity = '0';
+        target.style.transform = 'scale(0.95)';
+      }
+    });
+  });
+
+  // Только цифры в поле цены
+  const priceInput = document.getElementById('game-price');
+  if (priceInput) {
+    priceInput.addEventListener('input', function () {
+      this.value = this.value.replace(/[^\d]/g, '');
+    });
+  }
+</script>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/index.css" />
+    <title>Web server kind of site</title>
+    </head>
+    <body>
+    <div class="hero">
+        <span class="badge">Онлайн</span>
+        <h1>
+        <span class="dim">Welcome to</span><br>
+        <span class="highlight">{{name}}</span>
+        </h1>
+        <p>lorem ipsum</p>
+        <a href="/todo">Показать Todo список</a>
+        <a href="/payment">Показать Card список</a>
+        <a href="/market">Открыть Game Market</a>
+        <div class="stats">
+        <div class="stat">
+            <span class="stat-value">∞</span>
+            <span class="stat-label">Задач</span>
+        </div>
+        <div class="stat">
+            <span class="stat-value">24/7</span>
+            <span class="stat-label">Аптайм</span>
+        </div>
+        <div class="stat">
+            <span class="stat-value">v1.0</span>
+            <span class="stat-label">Версия</span>
+        </div>
+        </div>
+    </div>
+    <span class="footer-line">{{name}} · running</span>
+    <script src="index.js"></script>
+    </body>
+</html>

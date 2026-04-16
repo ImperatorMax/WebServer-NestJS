@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/todo.css">
+    <title>Todo List</title>
+</head>
+<body>
+    <h1>Todo List</h1>
+
+    <a href="/">Назад</a>
+
+    <ul class="tasks">
+      {{#each tasks}}
+        <li>
+            {{this.name}} - {{this.description}} - {{this.id}}
+            <input type="checkbox" id="completed-{{this.id}}" name="completed" value="{{this.id}}" {{#if this.completed}}checked{{/if}}>
+            <label for="completed-{{this.id}}">Выполнено</label>
+
+            <button onclick="deleteUser('{{this.id}}')">Удалить</button>
+        </li>
+      {{/each}}
+    </ul>
+
+    <form action="/todo" method="post">
+      <h2>Добавить задачу</h2>
+      <input name="name" type="text" placeholder="Название задачи" id="name" />
+      <input name="description" type="text" placeholder="Описание задачи" id="description" />
+      <input name="completed" type="checkbox" id="completed" />
+      <button type="submit">Добавить задачу</button>
+    </form>
+
+    <script>
+        async function deleteUser(id) {
+            if (confirm('Вы уверены?')) {
+            const response = await fetch(`/todo/${id}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                window.location.reload(); // Перезагружаем страницу после удаления
+            }
+            }
+        }
+    </script>
+</body>
+</html>

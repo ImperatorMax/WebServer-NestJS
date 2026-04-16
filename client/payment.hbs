@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment</title>
+    <link rel="stylesheet" href="/payment.css">
+</head>
+<body>
+
+    <a href="/">← Назад</a>
+
+    <h1>Payment</h1>
+    <p class="subtitle">Управление платёжными картами</p>
+
+    <!-- Список карт -->
+    <section class="cards-section">
+        <h2>Список карт</h2>
+
+        <ul class="cards-list">
+            {{#each card}}
+            <li class="card-item" data-id="{{this.id}}">
+                <div class="card-visual">
+                    <div class="card-chip"></div>
+                    <div class="card-info">
+                        <span class="card-name">{{this.name}}</span>
+                        <span class="card-number">{{this.number}}</span>
+                    </div>
+                    <div class="card-brand">CARD</div>
+                </div>
+                <div class="card-actions">
+                    <form action="/payment/delete/{{this.id}}" method="POST">
+                        <button type="submit" class="btn-delete" onclick="deleteUser('{{this.id}}')">Удалить</button>
+                    </form>
+                </div>
+            </li>
+            {{else}}
+            <!-- Пустое состояние отрисовывается через CSS -->
+            {{/each}}
+        </ul>
+    </section>
+
+    <!-- Форма добавления карты -->
+    <section class="add-section">
+        <h2>Добавить карту</h2>
+
+        <form action="/payment" method="POST" class="add-form" id="addCardForm">
+            <div class="field-group">
+                <label for="card-name">Название карты</label>
+                <input
+                    type="text"
+                    id="card-name"
+                    name="name"
+                    placeholder="Например: Моя основная карта"
+                    autocomplete="off"
+                    required
+                >
+            </div>
+
+            <div class="field-group">
+                <label for="card-number">Номер карты</label>
+                <input
+                    type="text"
+                    id="card-number"
+                    name="number"
+                    placeholder="000.000.000.000"
+                    maxlength="15"
+                    autocomplete="off"
+                    inputmode="numeric"
+                    required
+                >
+            </div>
+
+            <button type="submit">Добавить</button>
+        </form>
+    </section>
+
+</body>
+<script>
+    console.log('payment module connected to project');
+
+    // Форматирование номера карты при вводе
+    const numberInput = document.getElementById('card-number');
+    if (numberInput) {
+        numberInput.addEventListener('input', function () {
+            let value = this.value.replace(/[^\d]/g, '');
+            // Форматируем как 000.000.000.000 (3-3-3-3)
+            let formatted = value.match(/.{1,3}/g);
+            this.value = formatted ? formatted.join('.').slice(0, 15) : value;
+        });
+    }
+
+    // Живой предпросмотр карточки при вводе
+    const nameInput = document.getElementById('card-name');
+    const cardItems = document.querySelectorAll('.card-item');
+
+    // Анимация при удалении
+    document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.closest('form').addEventListener('submit', function (e) {
+            const li = this.closest('li');
+            if (li) {
+                li.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                li.style.opacity = '0';
+                li.style.transform = 'translateX(20px)';
+            }
+        });
+    });
+</script>
+</html>
