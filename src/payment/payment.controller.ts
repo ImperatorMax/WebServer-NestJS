@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Delete, Patch, Put, Param } from '@nestjs/common';
 import { PaymentService } from './payment.service';
 import { Body } from '@nestjs/common';
-import { CreatePaymentDpay } from './dpay/create-payment.dpay';
+import { CreatePaymentDto } from './dpay/create-payment.dto';
 import { CardEntity } from './payment.entity';
 
 @Controller('card')
@@ -24,7 +24,7 @@ export class PaymentController {
 
 
   @Post()
-  public create(@Body() dpay: CreatePaymentDpay): string {
+  public create(@Body() dpay: CreatePaymentDto): string {
     this.list.push(
       new CardEntity(this.list.length +1, dpay.cardNumber, dpay.isActive)
     )

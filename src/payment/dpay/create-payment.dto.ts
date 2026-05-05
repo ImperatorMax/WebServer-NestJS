@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 
 
-export class CreatePaymentDpay {
+export class CreatePaymentDto {
     @ApiProperty({ example: "0000000000000000", description: 'Title of the payment'})
     cardNumber: string = ''
 
