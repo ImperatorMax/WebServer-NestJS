@@ -1,73 +1,57 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Render,
-} from '@nestjs/common';
-
-class TaskEntity {
-  constructor(
-    public readonly id: number,
-    public readonly name: string,
-    public readonly description: string,
-    public readonly completed: boolean = false,
-  ) {}
-}
+import { Controller, Get, Post, Delete, Patch, Put, Param } from '@nestjs/common';
+import { TodoService } from './todo.service';
+import { Body } from '@nestjs/common';
+import { CreateTodoDto } from './dto/create-todo.dto';
+import { TodoEntity } from './todo.entity';
 
 @Controller('todo')
 export class TodoController {
-    private tasks: TaskEntity[];
+  private readonly list: TodoEntity[];
 
-    constructor() {
-    this.tasks = [
-        new TaskEntity(1, 'Task 1', 'Description for Task 1'),
-        new TaskEntity(2, 'Task 2', 'Description for Task 2'),
-        new TaskEntity(3, 'Task 3', 'Description for Task 3'),
-        new TaskEntity(
-        4,
-        'Сделать домашнее задание',
-        'Description for домашнее задание',
-        ),
-    ];
-    }
-
-    @Get()
-    @Render('todo')
-    public getTodos() {
-    return {
-        tasks: this.tasks,
-    };
-    }
-
-  @Post()
-  @Render('todo')
-  public addTodo(@Body() body: TaskEntity) {
-    console.log(body);
-
-    this.tasks.push(
-      new TaskEntity(
-        this.tasks.length + 1,
-        body.name,
-        body.description,
-        body.completed,
-      ),
-    );
-
-    return {
-      tasks: this.tasks,
-    };
+  constructor(private readonly todoService: TodoService) {
+    this.list = [
+      new TodoEntity(13253, 'Maksim', false),
+      new TodoEntity(43153, 'Vadim', false),
+      new TodoEntity(65574, 'Denis', false)
+    ]
   }
 
-  @Delete(':id')
-  @Render('todo')
-  public deleteTodo(@Param('id') id: number) {
-    this.tasks = this.tasks.filter((task) => task.id !== id);
 
-    return {
-      tasks: this.tasks,
-    };
+  @Get()
+  public findAll(): TodoEntity[] {
+    return this.list
+  }
+
+
+  @Post()
+  public create(@Body() dto: CreateTodoDto): string {
+    this.list.push(
+      new TodoEntity(this.list.length +1, dto.title, dto.completed)
+    )
+
+    return 'Todo created'
+  }
+
+
+  @Delete(':id')
+  public delete (@Param('id') id: string): string {
+    const index = this.list.findIndex((todo) => todo.id === +id);
+    if (index != -1) {
+      this.list.splice(index, 1)
+    }
+
+    return 'Todo deleted'
+  }
+
+
+  @Patch()
+  public update(): string {
+    return 'Todo updated'
+  }
+  
+
+  @Put()
+  public fullupdate(): string {
+    return 'Todo fully updated'
   }
 }

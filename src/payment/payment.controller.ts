@@ -1,67 +1,57 @@
-import { Controller, Get, Render, Post, Delete, Body, Param, Redirect, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Patch, Put, Param } from '@nestjs/common';
+import { PaymentService } from './payment.service';
+import { Body } from '@nestjs/common';
+import { CreatePaymentDto } from './dpay/create-payment.dto';
+import { CardEntity } from './payment.entity';
 
-class CardEntity {
-  constructor(
-    public readonly id: number,
-    public readonly name: string,
-    public readonly number: string,
-    public readonly completed: boolean = false,
-  ) {}
-}
-
-@Controller('payment')
+@Controller('card')
 export class PaymentController {
-    private card: CardEntity[];
+  private readonly list: CardEntity[];
 
-    constructor() {
-    this.card = [
-        new CardEntity(1, 'Task 1', `222.222.222.222`),
-        new CardEntity(2, 'Task 2', `222.222.222.222`),
-        new CardEntity(3, 'Task 3', `222.222.222.222`),
-        new CardEntity(
-        4,
-        'Сделать домашнее задание',
-        `222.222.222.222`,
-        ),
-    ];
-    }
+  constructor(private readonly paymentService: PaymentService) {
+    this.list = [
+      new CardEntity(1, '8379402768493764', true),
+      new CardEntity(2, '8537802767835164', false),
+      new CardEntity(3, '8379378368435764', false)
+    ]
+  }
 
-    @Get()
-    @Render('payment')
-    public getTodos() {
-    return {
-        card: this.card,
-    };
-    }
+
+  @Get()
+  public findAll(): CardEntity[] {
+    return this.list
+  }
+
 
   @Post()
-  @Render('payment')
-  public addCard(@Body() body: CardEntity) {
-    console.log(body);
+  public create(@Body() dpay: CreatePaymentDto): string {
+    this.list.push(
+      new CardEntity(this.list.length +1, dpay.cardNumber, dpay.isActive)
+    )
 
-    this.card.push(
-      new CardEntity(
-        this.card.length + 1,
-        body.name,
-        body.number,
-        body.completed,
-      ),
-    );
-
-    return {
-      card: this.card,
-    };
+    return 'Card created'
   }
 
-  @Post('/delete/:id')
-  // @Render('payment')
-  @Redirect('/payment', 302)
-  public deleteCard(@Param('id', ParseIntPipe) id: number) {
-    this.card = this.card.filter((card) => card.id !== id);
-    console.log(this.card)
-    return {
-      card: this.card,
-    };
+
+  @Delete(':id')
+  public delete (@Param('id') id: string): string {
+    const index = this.list.findIndex((payment) => payment.id === +id);
+    if (index != -1) {
+      this.list.splice(index, 1)
+    }
+
+    return 'Card deleted'
+  }
+
+
+  @Patch()
+  public update(): string {
+    return 'Card updated'
   }
   
+
+  @Put()
+  public fullupdate(): string {
+    return 'Card fully updated'
+  }
 }
