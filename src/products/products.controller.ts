@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Delete, Patch, Put, Param } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Body } from '@nestjs/common';
-import { CreateProductsDprod } from './dto/create-products.dto';
+import { CreateProductsDto } from './dto/create-products.dto';
 import { ProductsEntity } from './products.entity';
 
 
@@ -33,7 +33,7 @@ export class ProductsController {
 
 
   @Post()
-  public create(@Body() dto: CreateProductsDprod): string {
+  public create(@Body() dto: CreateProductsDto): string {
     this.list.push(
       new ProductsEntity(this.list.length +1, dto.title, dto.description, dto.image, dto.createdAt, dto.updatedAt, dto.isHave)
     )
