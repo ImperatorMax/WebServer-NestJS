@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Delete, Patch, Put, Param } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Patch, Put, Param, NotFoundException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Body } from '@nestjs/common';
 import { CreateUsersDto } from './dto/create-users.dto';
 import { UsersEntity } from './users.entity';
+import { UpdateUsersDto } from './dto/update-users.dto';
 
 
 
@@ -19,10 +20,21 @@ export class UsersController {
   }
 
 
-  @Get()
+  @Get('id')
   public findAll(): UsersEntity[] {
     return this.list
   }
+
+  @Get(':id')
+public findById(@Param('id') id: string): UsersEntity {
+  const user = this.list.find((user) => user.id === +id);
+
+  if (!user) {
+    throw new NotFoundException(`Пользователь с id=${id} не найден`);
+  }
+
+  return user;
+}
 
 
   @Post()
@@ -46,14 +58,18 @@ export class UsersController {
   }
 
 
-  @Patch()
-  public update(): string {
-    return 'User updated'
-  }
-  
+  @Patch(':id')
+public update(@Param('id') id: string, @Body() dto: UpdateUsersDto): UsersEntity {
+  const user = this.list.find((user) => user.id === +id);
 
-  @Put()
-  public fullupdate(): string {
-    return 'User fully updated'
+  if (!user) {
+    throw new NotFoundException(`Пользователь с id=${id} не найден`);
   }
+
+  if (dto.username) user.username = dto.username;
+  if (dto.email)    user.email = dto.email;
+  if (dto.password) user.password = dto.password;
+
+  return user;
+}
 }
