@@ -31,10 +31,34 @@ class CartItemEntity {
 @Controller('market')
 export class MarketController {
   private games: GameEntity[] = [
-    new GameEntity(1, 'Deltarune', 950, 'https://cdn2.steamgriddb.com/thumb/28c965a5ca78dcc84ae82ffb568f80e6.jpg', 'RPG'),
-    new GameEntity(2, 'Space Station 14', 0, 'https://tse1.mm.bing.net/th/id/OIP.AsDiqHZ5hvHmtqQRnTxf2QHaLH?rs=1&pid=ImgDetMain&o=7&rm=3', 'Simulator'),
-    new GameEntity(3, 'Hollow Knight', 499, 'https://cdn2.steamgriddb.com/thumb/0d1e5791e6d9f5d290a9eedc1d825e1e.jpg', 'Indie'),
-    new GameEntity(4, 'ULTRAKILL', 529, 'https://cdn2.steamgriddb.com/thumb/f79e78a787776a1cfe7c4e82c7cfd955.jpg', 'FPS'),
+    new GameEntity(
+      1,
+      'Deltarune',
+      950,
+      'https://cdn2.steamgriddb.com/thumb/28c965a5ca78dcc84ae82ffb568f80e6.jpg',
+      'RPG',
+    ),
+    new GameEntity(
+      2,
+      'Space Station 14',
+      0,
+      'https://tse1.mm.bing.net/th/id/OIP.AsDiqHZ5hvHmtqQRnTxf2QHaLH?rs=1&pid=ImgDetMain&o=7&rm=3',
+      'Simulator',
+    ),
+    new GameEntity(
+      3,
+      'Hollow Knight',
+      499,
+      'https://cdn2.steamgriddb.com/thumb/0d1e5791e6d9f5d290a9eedc1d825e1e.jpg',
+      'Indie',
+    ),
+    new GameEntity(
+      4,
+      'ULTRAKILL',
+      529,
+      'https://cdn2.steamgriddb.com/thumb/f79e78a787776a1cfe7c4e82c7cfd955.jpg',
+      'FPS',
+    ),
     new GameEntity(5, 'Doom Eternal', 1299, '/images/doom.jpg', 'FPS'),
   ];
 
