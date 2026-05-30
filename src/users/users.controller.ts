@@ -13,9 +13,9 @@ export class UsersController {
 
   constructor(private readonly usersService: UsersService) {
     this.list = [
-      new UsersEntity(1, 'StilF_M', 'maskimfarukh@gmail.com', 13322, 'Maxim', 'F'),
-      new UsersEntity(2, 'dacha1233', 'dachca13333@gmail.com', 42333, 'Sergey', 'V'),
-      new UsersEntity(3, 'Romenov_V', 'romka337@gmail.com', 33333, 'Vlad', 'K')
+      new UsersEntity(1, 'StilF_M', 'maskimfarukh@gmail.com', '13322', 'Maxim', 'F'),
+      new UsersEntity(2, 'dacha1233', 'dachca13333@gmail.com', '42333', 'Sergey', 'V'),
+      new UsersEntity(3, 'Romenov_V', 'romka337@gmail.com', '33333', 'Vlad', 'K')
     ]
   }
 
