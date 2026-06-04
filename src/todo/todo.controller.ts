@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Delete, Patch, Put, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Delete,
+  Patch,
+  Put,
+  Param,
+} from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { Body } from '@nestjs/common';
 import { CreateTodoDto } from './dto/create-todo.dto';
@@ -12,46 +20,41 @@ export class TodoController {
     this.list = [
       new TodoEntity(13253, 'Maksim', false),
       new TodoEntity(43153, 'Vadim', false),
-      new TodoEntity(65574, 'Denis', false)
-    ]
+      new TodoEntity(65574, 'Denis', false),
+    ];
   }
-
 
   @Get()
   public findAll(): TodoEntity[] {
-    return this.list
+    return this.list;
   }
-
 
   @Post()
   public create(@Body() dto: CreateTodoDto): string {
     this.list.push(
-      new TodoEntity(this.list.length +1, dto.title, dto.completed)
-    )
+      new TodoEntity(this.list.length + 1, dto.title, dto.completed),
+    );
 
-    return 'Todo created'
+    return 'Todo created';
   }
-
 
   @Delete(':id')
-  public delete (@Param('id') id: string): string {
+  public delete(@Param('id') id: string): string {
     const index = this.list.findIndex((todo) => todo.id === +id);
     if (index != -1) {
-      this.list.splice(index, 1)
+      this.list.splice(index, 1);
     }
 
-    return 'Todo deleted'
+    return 'Todo deleted';
   }
-
 
   @Patch()
   public update(): string {
-    return 'Todo updated'
+    return 'Todo updated';
   }
-  
 
   @Put()
   public fullupdate(): string {
-    return 'Todo fully updated'
+    return 'Todo fully updated';
   }
 }

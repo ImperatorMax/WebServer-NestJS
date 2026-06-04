@@ -1,11 +1,18 @@
-import { Controller, Get, Post, Delete, Patch, Put, Param, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Delete,
+  Patch,
+  Put,
+  Param,
+  NotFoundException,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Body } from '@nestjs/common';
 import { CreateUsersDto } from './dto/create-users.dto';
 import { UsersEntity } from './users.entity';
 import { UpdateUsersDto } from './dto/update-users.dto';
-
-
 
 @Controller('users')
 export class UsersController {
@@ -19,57 +26,63 @@ export class UsersController {
     ]
   }
 
-
   @Get('id')
   public findAll(): UsersEntity[] {
-    return this.list
+    return this.list;
   }
 
   @Get(':id')
-public findById(@Param('id') id: string): UsersEntity {
-  const user = this.list.find((user) => user.id === +id);
+  public findById(@Param('id') id: string): UsersEntity {
+    const user = this.list.find((user) => user.id === +id);
 
-  if (!user) {
-    throw new NotFoundException(`Пользователь с id=${id} не найден`);
+    if (!user) {
+      throw new NotFoundException(`Пользователь с id=${id} не найден`);
+    }
+
+    return user;
   }
-
-  return user;
-}
-
 
   @Post()
   public create(@Body() dto: CreateUsersDto): string {
     this.list.push(
-      new UsersEntity(this.list.length +1, dto.username, dto.email, dto.password, dto.firstName, dto.lastName)
-    )
+      new UsersEntity(
+        this.list.length + 1,
+        dto.username,
+        dto.email,
+        dto.password,
+        dto.firstName,
+        dto.lastName,
+      ),
+    );
 
-    return 'User created'
+    return 'User created';
   }
-
 
   @Delete(':id')
-  public delete (@Param('id') id: string): string {
+  public delete(@Param('id') id: string): string {
     const index = this.list.findIndex((users) => users.id === +id);
     if (index != -1) {
-      this.list.splice(index, 1)
+      this.list.splice(index, 1);
     }
 
-    return 'User deleted'
+    return 'User deleted';
   }
-
 
   @Patch(':id')
-public update(@Param('id') id: string, @Body() dto: UpdateUsersDto): UsersEntity {
-  const user = this.list.find((user) => user.id === +id);
+  public update(
+    @Param('id') id: string,
+    @Body() dto: UpdateUsersDto,
+  ): UsersEntity {
+    const user = this.list.find((user) => user.id === +id);
 
-  if (!user) {
-    throw new NotFoundException(`Пользователь с id=${id} не найден`);
+    if (!user) {
+      throw new NotFoundException(`Пользователь с id=${id} не найден`);
+    }
+
+    if (dto.username) user.username = dto.username;
+    if (dto.email) user.email = dto.email;
+    if (dto.password) user.password = dto.password;
+
+    return user;
   }
-
-  if (dto.username) user.username = dto.username;
-  if (dto.email)    user.email = dto.email;
-  if (dto.password) user.password = dto.password;
-
-  return user;
-}
 }
