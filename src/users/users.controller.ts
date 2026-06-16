@@ -79,7 +79,7 @@ export class UsersController {
 
     this.list.push(newUser);
 
-    this.usersRepo.create(newUser)
+    await this.usersRepo.create(newUser);
 
     return 'User created';
   }

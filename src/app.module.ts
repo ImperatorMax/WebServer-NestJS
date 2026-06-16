@@ -6,10 +6,11 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [TodoModule, 
-    PaymentModule, 
-    ProductsModule, 
-    UsersModule, 
+  imports: [
+    TodoModule,
+    PaymentModule,
+    ProductsModule,
+    UsersModule,
     TypeOrmModule.forRoot({
       type: 'better-sqlite3',
       database: 'database.sqlite',
