@@ -11,12 +11,15 @@ import { TodoService } from './todo.service';
 import { Body } from '@nestjs/common';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { TodoEntity } from './todo.entity';
+import { TodoRepository } from './todo.repository';
 
 @Controller('todo')
 export class TodoController {
   private readonly list: TodoEntity[];
 
-  constructor(private readonly todoService: TodoService) {
+  constructor(
+    private readonly todoService: TodoService,
+      private readonly todoRepo: TodoRepository,) {
     this.list = [
       new TodoEntity(13253, 'Maksim', false),
       new TodoEntity(43153, 'Vadim', false),
@@ -30,13 +33,22 @@ export class TodoController {
   }
 
   @Post()
-  public create(@Body() dto: CreateTodoDto): string {
-    this.list.push(
-      new TodoEntity(this.list.length + 1, dto.title, dto.completed),
-    );
-
-    return 'Todo created';
+  public async create(@Body() dto: CreateTodoDto): Promise<string> {
+          const newTodo = new TodoEntity(
+            this.list.length + 1,
+            dto.title,
+            dto.completed,
+        );
+    
+        this.list.push(newTodo);
+    
+        this.todoRepo.create(newTodo)
+    
+        return 'Todo created';
   }
+
+
+
 
   @Delete(':id')
   public delete(@Param('id') id: string): string {

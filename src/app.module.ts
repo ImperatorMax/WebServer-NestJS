@@ -15,10 +15,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       type: 'better-sqlite3',
       database: 'database.sqlite',
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true,
+      synchronize: true, 
     }),
   ],
   controllers: [],
   providers: [],
 })
 export class AppModule {}
+

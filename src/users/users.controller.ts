@@ -68,13 +68,13 @@ export class UsersController {
 
   @Post()
   public async create(@Body() dto: CreateUsersDto): Promise<string> {
-    const newUser = new UsersEntity(
-      this.list.length + 1,
-      dto.username,
-      dto.email,
-      dto.password,
-      dto.firstName,
-      dto.lastName,
+      const newUser = new UsersEntity(
+        this.list.length + 1,
+        dto.username,
+        dto.email,
+        dto.password,
+        dto.firstName,
+        dto.lastName,
     );
 
     this.list.push(newUser);
