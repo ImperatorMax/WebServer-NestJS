@@ -4,7 +4,6 @@ import {
   Post,
   Delete,
   Patch,
-  Put,
   Param,
   NotFoundException,
 } from '@nestjs/common';
@@ -13,17 +12,42 @@ import { Body } from '@nestjs/common';
 import { CreateUsersDto } from './dto/create-users.dto';
 import { UsersEntity } from './users.entity';
 import { UpdateUsersDto } from './dto/update-users.dto';
+import { UsersRepository } from './users.repository';
 
 @Controller('users')
 export class UsersController {
   private readonly list: UsersEntity[];
 
-  constructor(private readonly usersService: UsersService) {
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly usersRepo: UsersRepository,
+  ) {
     this.list = [
-      new UsersEntity(1, 'StilF_M', 'maskimfarukh@gmail.com', '13322', 'Maxim', 'F'),
-      new UsersEntity(2, 'dacha1233', 'dachca13333@gmail.com', '42333', 'Sergey', 'V'),
-      new UsersEntity(3, 'Romenov_V', 'romka337@gmail.com', '33333', 'Vlad', 'K')
-    ]
+      new UsersEntity(
+        1,
+        'StilF_M',
+        'maskimfarukh@gmail.com',
+        '13322',
+        'Maxim',
+        'F',
+      ),
+      new UsersEntity(
+        2,
+        'dacha1233',
+        'dachca13333@gmail.com',
+        '42333',
+        'Sergey',
+        'V',
+      ),
+      new UsersEntity(
+        3,
+        'Romenov_V',
+        'romka337@gmail.com',
+        '33333',
+        'Vlad',
+        'K',
+      ),
+    ];
   }
 
   @Get('id')
@@ -43,17 +67,19 @@ export class UsersController {
   }
 
   @Post()
-  public create(@Body() dto: CreateUsersDto): string {
-    this.list.push(
-      new UsersEntity(
+  public async create(@Body() dto: CreateUsersDto): Promise<string> {
+      const newUser = new UsersEntity(
         this.list.length + 1,
         dto.username,
         dto.email,
         dto.password,
         dto.firstName,
         dto.lastName,
-      ),
     );
+
+    this.list.push(newUser);
+
+    this.usersRepo.create(newUser)
 
     return 'User created';
   }
