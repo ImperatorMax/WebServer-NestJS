@@ -1,20 +1,16 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { TodoEntity } from "./todo.entity";
-import { Todo } from "./entities/todo.entity";
+import { Injectable } from '@nestjs/common';
+import { TodoEntity } from './todo.entity';
+import { Todo } from './entities/todo.entity';
 
-import { Repository } from "typeorm";
-import { InjectRepository } from "@nestjs/typeorm";
-
-
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class TodoRepository {
-
-    constructor(
-        @InjectRepository(Todo)
-        private readonly todoRepository: Repository<Todo>,
-    ) {}
-
+  constructor(
+    @InjectRepository(Todo)
+    private readonly todoRepository: Repository<Todo>,
+  ) {}
 
     public async create(todo: TodoEntity): Promise<TodoEntity> {
         const todoData = new Todo()
