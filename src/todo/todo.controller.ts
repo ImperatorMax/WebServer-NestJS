@@ -6,12 +6,14 @@ import {
   Patch,
   Put,
   Param,
+  NotFoundException,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { Body } from '@nestjs/common';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { TodoEntity } from './todo.entity';
 import { TodoRepository } from './todo.repository';
+import { NotFoundError } from 'rxjs';
 
 @Controller('todo')
 export class TodoController {
@@ -19,7 +21,8 @@ export class TodoController {
 
   constructor(
     private readonly todoService: TodoService,
-      private readonly todoRepo: TodoRepository,) {
+    private readonly todoRepo: TodoRepository,
+  ) {
     this.list = [
       new TodoEntity(13253, 'Maksim', false),
       new TodoEntity(43153, 'Vadim', false),
@@ -28,34 +31,38 @@ export class TodoController {
   }
 
   @Get()
-  public findAll(): TodoEntity[] {
-    return this.list;
+  public async findAll(): Promise<TodoEntity[]> {
+    const todos = await this.todoRepo.findAll();
+    return todos;
+  }
+
+  @Get(":id")
+  public async findById(@Param('id') id: string): Promise<TodoEntity | null> {
+    const todo = await this.todoRepo.findById(+id);
+    if (!todo) {
+      throw new NotFoundException(`Todo with id ${id} not found`)
+    }
+    return todo;
   }
 
   @Post()
   public async create(@Body() dto: CreateTodoDto): Promise<string> {
-          const newTodo = new TodoEntity(
-            this.list.length + 1,
-            dto.title,
-            dto.completed,
-        );
-    
-        this.list.push(newTodo);
-    
-        this.todoRepo.create(newTodo)
-    
-        return 'Todo created';
+    const newTodo = new TodoEntity(
+      this.list.length + 1,
+      dto.title,
+      dto.completed,
+    );
+
+    this.list.push(newTodo);
+
+    await this.todoRepo.create(newTodo);
+
+    return 'Todo created';
   }
 
-
-
-
   @Delete(':id')
-  public delete(@Param('id') id: string): string {
-    const index = this.list.findIndex((todo) => todo.id === +id);
-    if (index != -1) {
-      this.list.splice(index, 1);
-    }
+  public async delete(@Param('id') id: string): Promise<string> {
+    await this.todoRepo.delete(+id)
 
     return 'Todo deleted';
   }

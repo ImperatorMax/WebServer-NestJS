@@ -27,33 +27,34 @@ export class UsersController {
         1,
         'StilF_M',
         'maskimfarukh@gmail.com',
-        '13322',
-        'Maxim',
-        'F',
+        // '13322',
+        // 'Maxim',
+        // 'F',
       ),
       new UsersEntity(
         2,
         'dacha1233',
         'dachca13333@gmail.com',
-        '42333',
-        'Sergey',
-        'V',
+        // '42333',
+        // 'Sergey',
+        // 'V',
       ),
       new UsersEntity(
         3,
         'Romenov_V',
         'romka337@gmail.com',
-        '33333',
-        'Vlad',
-        'K',
+        // '33333',
+        // 'Vlad',
+        // 'K',
       ),
     ];
   }
 
-  @Get('id')
-  public findAll(): UsersEntity[] {
-    return this.list;
-  }
+  @Get()
+  public async findAll(): Promise<UsersEntity[]> {
+      const users = await this.usersRepo.findAll();
+      return users;
+    }
 
   @Get(':id')
   public findById(@Param('id') id: string): UsersEntity {
@@ -68,13 +69,13 @@ export class UsersController {
 
   @Post()
   public async create(@Body() dto: CreateUsersDto): Promise<string> {
-      const newUser = new UsersEntity(
-        this.list.length + 1,
-        dto.username,
-        dto.email,
-        dto.password,
-        dto.firstName,
-        dto.lastName,
+    const newUser = new UsersEntity(
+      this.list.length + 1,
+      dto.username,
+      dto.email,
+      // dto.password,
+      // dto.firstName,
+      // dto.lastName,
     );
 
     this.list.push(newUser);
@@ -84,14 +85,12 @@ export class UsersController {
     return 'User created';
   }
 
-  @Delete(':id')
-  public delete(@Param('id') id: string): string {
-    const index = this.list.findIndex((users) => users.id === +id);
-    if (index != -1) {
-      this.list.splice(index, 1);
-    }
 
-    return 'User deleted';
+  @Delete(':id')
+  public async delete(@Param('id') id: string): Promise<string> {
+    await this.usersRepo.delete(+id)
+
+    return 'Todo deleted';
   }
 
   @Patch(':id')
@@ -107,7 +106,7 @@ export class UsersController {
 
     if (dto.username) user.username = dto.username;
     if (dto.email) user.email = dto.email;
-    if (dto.password) user.password = dto.password;
+    // if (dto.password) user.password = dto.password;
 
     return user;
   }
