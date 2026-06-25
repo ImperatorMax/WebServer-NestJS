@@ -3,11 +3,11 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class Todo {
   @PrimaryGeneratedColumn()
-  id: number = 0;
+  id: number;
 
   @Column()
-  title: string = ''
+  title: string;
 
   @Column()
-  completed: boolean = false
+  completed: boolean;
 }
