@@ -13,6 +13,7 @@ import { Body } from '@nestjs/common';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { TodoEntity } from './todo.entity';
 import { TodoRepository } from './todo.repository';
+import { NotFoundError } from 'rxjs';
 
 @Controller('todo')
 export class TodoController {
@@ -35,11 +36,11 @@ export class TodoController {
     return todos;
   }
 
-  @Get(':id')
+  @Get(":id")
   public async findById(@Param('id') id: string): Promise<TodoEntity | null> {
-    const todo = await this.todoRepo.findById(+id); // "1" -> 1
+    const todo = await this.todoRepo.findById(+id);
     if (!todo) {
-      throw new NotFoundException(`Todo with id ${id} not found`);
+      throw new NotFoundException(`Todo with id ${id} not found`)
     }
     return todo;
   }
@@ -61,7 +62,7 @@ export class TodoController {
 
   @Delete(':id')
   public async delete(@Param('id') id: string): Promise<string> {
-    await this.todoRepo.delete(+id);
+    await this.todoRepo.delete(+id)
 
     return 'Todo deleted';
   }

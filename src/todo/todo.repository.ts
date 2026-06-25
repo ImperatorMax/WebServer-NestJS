@@ -12,31 +12,31 @@ export class TodoRepository {
     private readonly todoRepository: Repository<Todo>,
   ) {}
 
-  public async create(todo: TodoEntity): Promise<Todo> {
-    const todoData = new Todo();
-    todoData.title = todo.title;
-    todoData.completed = todo.completed;
+    public async create(todo: TodoEntity): Promise<TodoEntity> {
+        const todoData = new Todo()
+        todoData.title = todo.title;
+        todoData.completed = todo.completed;
 
-    const newTodo = this.todoRepository.create(todoData);
+        const newTodo = this.todoRepository.create(todoData);
 
-    const savedTodo = await this.todoRepository.save(newTodo);
+        const savedTodo = await this.todoRepository.save(newTodo)
 
-    console.log(savedTodo);
+        console.log(savedTodo)
+        return todo;
+    }
 
-    return savedTodo;
-  }
 
-  public async findAll(): Promise<Todo[]> {
-    const todos = await this.todoRepository.find();
+    public async findAll(): Promise<Todo[]> {
+    const todos = await this.todoRepository.find()
     return todos;
-  }
+    }
 
-  public async delete(id: number): Promise<void> {
-    await this.todoRepository.delete(id);
-  }
+    public async delete(id:number): Promise<void> {
+        await this.todoRepository.delete(id)
+    }
 
-  public async findById(id: number): Promise<Todo | null> {
-    const todo = await this.todoRepository.findOneBy({ id });
-    return todo;
-  }
+    public async findById(id: number): Promise<Todo | null> {
+        const todo = await this.todoRepository.findOneBy({id})
+        return todo;
+    }
 }
