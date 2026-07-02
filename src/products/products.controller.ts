@@ -6,32 +6,29 @@ import {
   Patch,
   Put,
   Param,
+  NotFoundException,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Body } from '@nestjs/common';
 import { CreateProductsDto } from './dto/create-products.dto';
 import { ProductsEntity } from './products.entity';
+import { ProductsRepository } from './products.repository';
 
 @Controller('products')
+
 export class ProductsController {
   private readonly list: ProductsEntity[];
-  private readonly url1: string[] = [
-    `https://tse2.mm.bing.net/th/id/OIP.zD5dA74Os5pfKf5ZEJIciwHaHu?rs=1&pid=ImgDetMain&o=7&rm=3`,
-  ];
-  private readonly url2: string[] = [
-    `https://tse4.mm.bing.net/th/id/OIP.YU4igMRl5W9Lq7DAeQaAyQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3`,
-  ];
-  private readonly url3: string[] = [
-    `https://tse1.mm.bing.net/th/id/OIP.387PojRI5pukjUndARHSuAHaE8?rs=1&pid=ImgDetMain&o=7&rm=3`,
-  ];
 
-  constructor(private readonly productsService: ProductsService) {
+
+  constructor(
+    private readonly productsService: ProductsService,
+    private readonly productsRepo: ProductsRepository,
+  ) {
     this.list = [
       new ProductsEntity(
         1,
         'Apple',
         'Яблоко',
-        this.url1,
         new Date(),
         new Date(),
         true,
@@ -40,7 +37,6 @@ export class ProductsController {
         2,
         'Coca-Cola',
         'Газировка',
-        this.url2,
         new Date(),
         new Date(),
         false,
@@ -49,7 +45,6 @@ export class ProductsController {
         3,
         'Burger',
         'Чизбургер',
-        this.url3,
         new Date(),
         new Date(),
         false,
@@ -58,35 +53,45 @@ export class ProductsController {
   }
 
   @Get()
-  public findAll(): ProductsEntity[] {
-    return this.list;
-  }
+    public async findAll(): Promise<ProductsEntity[]> {
+        const products = await this.productsRepo.findAll();
+        return products;
+      }
+  
+    @Get(':id')
+    public findById(@Param('id') id: string): ProductsEntity {
+      const product = this.list.find((product) => product.id === +id);
+  
+      if (!product) {
+        throw new NotFoundException(`Продукт с id=${id} не найден`);
+      }
+  
+      return product;
+    }
 
   @Post()
-  public create(@Body() dto: CreateProductsDto): string {
-    this.list.push(
-      new ProductsEntity(
-        this.list.length + 1,
-        dto.title,
-        dto.description,
-        dto.image,
-        dto.createdAt,
-        dto.updatedAt,
-        dto.isHave,
-      ),
+  public async create(@Body() dto: CreateProductsDto): Promise<string> {
+    const newProducts = new ProductsEntity(
+      this.list.length + 1,
+      dto.title,
+      dto.description,
+      new Date(),
+      new Date(),
+      dto.isHave,
     );
 
-    return 'Card created';
+    this.list.push(newProducts);
+
+    await this.productsRepo.create(newProducts);
+
+    return 'Todo created';
   }
 
   @Delete(':id')
-  public delete(@Param('id') id: string): string {
-    const index = this.list.findIndex((products) => products.id === +id);
-    if (index != -1) {
-      this.list.splice(index, 1);
-    }
+  public async delete(@Param('id') id: string): Promise<string> {
+    await this.productsRepo.delete(+id)
 
-    return 'Products deleted';
+    return 'Todo deleted';
   }
 
   @Patch()
